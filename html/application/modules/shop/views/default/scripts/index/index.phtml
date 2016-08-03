@@ -1,0 +1,136 @@
+
+<div class="jiantou"></div>
+<div>
+	<div class="shoufukuan">
+		<p>
+			<img src="/skin/images/fukuanren.png" />&nbsp;&nbsp;付款人
+		</p>
+		<p>
+			姓名：<input type="text" class="form-control" id="payname"/>
+		</p>
+		<p>
+			卡号：<input type="text" class="form-control" id="paycard"/>
+		</p>
+	</div>
+
+	<div class="shoufukuan">
+		<p>
+			<img src="/skin/images/shoukuanren.png" />&nbsp;&nbsp;收款人
+		</p>
+		<p>
+			姓名：<input type="text" class="form-control" id="receivename" value="<?=$this->username?>" readonly="readonly"/>
+		</p>
+		<p>
+			卡号：<input type="text" class="form-control" id="receivecard" value="<?=$this->noid?>" readonly="readonly"/>
+		</p>
+	</div>
+</div>
+<div class="clear_fix"></div>
+<br />
+<hr />
+<!--<div class="fkje">
+				<p>付款金额：</p>
+				<p><input type="text" class="form-control"/></p>
+				<button type="button" class="btn btn-success btn-lg">确认支付</button>
+			</div>-->
+<table width="430">
+	<tr height="50">
+		<td width="140" align="right" >
+			<p style="font-size: 20px; padding-top: 10px;">付款金额：&nbsp;&nbsp;</p>
+		</td>
+		<td><input type="text" class="form-control" id="amount"/></td>
+	
+	
+	<tr>
+	
+	
+	<tr height="50">
+		<td width="140" align="right">
+			<p style="font-size: 20px; padding-top: 10px;">折扣：&nbsp;&nbsp;</p>
+		</td>
+		<td><input type="text" class="form-control" id="rate" value="10"/></td>
+	
+	
+	<tr>
+	
+	
+	<tr height="50">
+		<td width="140" align="right">
+			<p style="font-size: 20px; padding-top: 10px;">实付金额：&nbsp;&nbsp;</p>
+		</td>
+		<td id="realpay">0</td>
+	
+	
+	<tr>
+	
+	
+	<tr height="50">
+		<td></td>
+		<td>
+			<button type="button" class="btn btn-success btn-lg" id="btnpay">确认支付</button>
+		</td>
+	
+	
+	<tr>
+
+</table>
+<div class="clear_fix"></div>
+<br />
+<hr />
+<p>说明：--------------------------------</p>
+
+<script type="text/javascript">
+$('#amount,#rate').blur(function(){
+	
+	amount = $('#amount').attr('value');
+	rate = $('#rate').attr('value');
+	if (rate>10 || rate <=0) {
+		return;
+	}
+	try {
+		realpay = amount*rate/10;
+		if(isNaN(realpay)){
+			realpay=0;
+		}
+	} catch (e) {
+		// TODO: handle exception
+		realpay = 0;
+	}
+
+	$('#realpay').text(realpay);
+	
+});
+
+$('#btnpay').click(function(){
+
+	//验证付款字段输入是否合法
+	if(payLegal() && payLegalShop()){
+
+		//验证用户名卡号是否正确
+		if (isrealCard($('#paycard').attr('value'), $('#payname').attr('value')) && 
+			isrealCard($('#receivecard').attr('value'), $('#receivename').attr('value'))
+			) {
+			//提交付款数据
+			data = new Object();
+			data.payname = $('#payname').attr('value');
+			data.paycard = $('#paycard').attr('value');
+			data.amount = $('#amount').attr('value');
+			data.rate = $('#rate').attr('value');
+			result = toPay(data,'/shop/index/pay');
+			//判断支付结果
+			if(result.stat){
+				alert(result.message);
+				//刷新页面
+				loadRightData('/shop/index','get','');
+			}else{
+				alert(result.message);
+				//支付失败
+			}
+		}else{
+			alert('账号或姓名错误，请修改');
+		}
+	}
+});
+</script>
+
+

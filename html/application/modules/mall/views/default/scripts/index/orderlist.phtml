@@ -1,0 +1,87 @@
+<?=$this->location?>
+
+<div class="mj_list">
+	<div class="table_title clearfix">
+			<div class="title_left"><?=$this->module?></div>
+			<div class="jrsc_fy" >
+				
+			</div>
+		</div> 
+		<div class="rk_table">
+			<table class="data_table" border="0" cellpadding="0" cellspacing="0">
+				<thead>
+				<tr>
+					<th >订单编号</th>
+					<th >创建时间</th>
+					<th >金额</th>
+					<th >订单状态</th>
+					<th >支付状态</th>
+					<th >操作</th>
+				</tr>
+				</thead>
+				<tbody>
+			<?php 
+				foreach ($this->list as $k=>$v){?>
+					
+				<tr>
+					<td><?=$v['order_sn']?></td>
+					<td><?=$v['add_time']?></td>
+					<td><?=$v['amount']?></td>
+					<td><?=$v['order_status']?></td>
+					<td><?=$v['pay_status']?></td>
+					<td class="goto"><a href="<?=$this->url?>/mall/index/orderinfo?id=<?=$v['id']?>">详情</a></td>
+				</tr>
+				<?php }
+			?>
+				</tbody>
+			</table>
+
+		</div>
+		<hr />
+			<?php
+	
+		$classleft = ($this->currentPage <= 1)?"slidehide":"";
+		$classright = ($this->currentPage >= $this->totalPage)?"slidehide":"";
+		if($this->totalPage <=1){
+			$classleft='slidehide';
+			$classright='slidehide';
+		}
+	?>
+	<div class="slide slideleft <?=$classleft?>"><a href="<?=$this->url?>/mall/index/orderlist?pageNum=<?=($this->currentPage-1)?>">&nbsp;</a></div>
+	<div class="slide slideright <?=$classright?>"><a href="<?=$this->url?>/mall/index/orderlist?pageNum=<?=($this->currentPage+1)?>">&nbsp;</a></div>			
+		
+</div>
+<script>
+	
+	$('.query').click(function(){
+		
+		});
+
+	$('#load_data a').click(function(){
+
+		rightATagClickListener($(this),'');
+		return false;
+		});
+					
+	//鼠标经过
+	$('.data_table tbody tr').hover(function(){
+		$("td",this).css("background","#ccc");
+	},function(){
+		$("td",this).css("background",$(this).attr("background"));
+	});	
+	
+	//点击行
+	$('.data_table tbody tr').click(function(){
+		rightATagClickListener($("td.goto a",this),'');
+	});
+		
+
+	//隔行变色
+	$(".data_table tbody tr:even").attr("background","#fff");
+	$(".data_table tbody tr:odd").attr("background","#cbefde");
+	$(".data_table tbody tr:odd td").css("background","#cbefde");
+
+	//翻页
+	slidesome(); 
+	
+</script>

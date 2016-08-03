@@ -1,0 +1,111 @@
+<?=$this->location?>
+
+<div class="mj_list">
+	<div class="table_title clearfix">
+			<div class="title_left"><?=$this->module?></div>
+			<div class="jrsc_fy" >
+				<ul class="pagination">
+					<?php 
+						if ($this->PageList['left']) {?>
+					<li><a href="<?=$this->url?>/order/myorder?pageNum=1">&laquo;</a></li>
+						<?php }
+						if ($this->PageList['leftdot']) {?>
+							
+					<li><a class="dot" href="">...</a></li>
+						<?php }
+						foreach ($this->PageList['list'] as $v){
+							$class=($v == $this->currentPage)?"class='active'":"";
+					?>
+					<li <?=$class?>><a href="<?=$this->url?>/order/myorder?pageNum=<?=$v?>"><?=$v?></a></li>
+						<?php }
+					if ($this->PageList['rightdot']) {?>
+							
+					<li><a class="dot" href="">...</a></li>
+						<?php }
+						if ($this->PageList['right']) {?>
+					<li><a href="<?=$this->url?>/order/myorder?pageNum=<?=$this->totalPage?>">&raquo;</a></li>
+						<?php }
+					?>
+				</ul>
+			</div>
+		</div> 
+		<div class="rk_table">
+			<table class="data_table" border="0" cellpadding="0" cellspacing="0">
+				<thead>
+				<tr>
+					<th >订单编号</th>
+					<th >创建时间</th>
+					<th >佣金</th>
+					<th >总价</th>
+					<th >获取方式</th>
+					<th >状态</th>
+					<th >操作</th>
+				</tr>
+				</thead>
+				<tbody>
+			<?php 
+				foreach ($this->list as $k=>$v){?>
+					
+				<tr class="color<?=$v['color']?>">
+					<td><?=$v['ordersn']?></td>
+					<td><?=$v['cdate']?></td>
+					<td><?=sprintf("%.2f",$v['price'])?></td>
+					<td><?=$v['amount']?></td>
+					<td><?=$v['pstat']?></td>
+					<td><?=$v['ostat']?></td>
+					<td class="goto"><a href="<?=$this->url?>/order/myorder/info?id=<?=$v['id']?>">详情</a></td>
+				</tr>
+				<?php }
+			?>
+				</tbody>
+			</table>
+
+		</div>
+		<hr />
+					
+	<?php
+	
+		$classleft = ($this->currentPage <= 1)?"slidehide":"";
+		$classright = ($this->currentPage >= $this->totalPage)?"slidehide":"";
+		if($this->totalPage <=1){
+			$classleft='slidehide';
+			$classright='slidehide';
+		}
+	?>
+	<div class="slide slideleft <?=$classleft?>"><a href="<?=$this->url?>/order/myorder?pageNum=<?=($this->currentPage-1)?>">&nbsp;</a></div>
+	<div class="slide slideright <?=$classright?>"><a href="<?=$this->url?>/order/myorder?pageNum=<?=($this->currentPage+1)?>">&nbsp;</a></div>			
+				
+</div>
+<script>
+	
+	$('.query').click(function(){
+		
+		});
+			
+	//鼠标经过
+	$('.data_table tbody tr').hover(function(){
+		$("td",this).css("background","#ccc");
+	},function(){
+		$("td",this).css("background",$(this).attr("background"));
+	});
+	
+	//点击行
+	$('.data_table tbody tr').click(function(){
+		rightATagClickListener($("td.goto a",this),'');
+	});
+	
+	$('#load_data a').click(function(){
+		rightATagClickListener($(this),'');
+		return false;
+		});
+
+	//隔行变色
+	$(".data_table tbody tr").each(function(){
+		$(this).attr("background",$("td",this).css("background-color"));
+	});
+	
+	
+	//翻页
+	slidesome(); 
+	
+</script>

@@ -1,0 +1,28 @@
+{
+	"master":{"roothost":"localhost","rootport":9999,"webport":9998},
+	"servers":{
+		"net":{"netport":11002,"name":"net","remoteport":[{"rootport":10001,"rootname":"gate"}],"app":"app.netserver"},
+		"gate":{"rootport":10001,"name":"gate","app":"app.gateserver"},
+		"logic":{"remoteport":[{"rootport":10001,"rootname":"gate"}],"name":"logic","app":"app.logic"}
+
+
+	},
+	"db":{
+		"host":"localhost",
+		"user":"root",
+		"passwd":"root",
+		"port":3306,
+		"db":"vipbak_3",
+		"charset":"utf8"
+	},
+	"imgpath":{
+		"path":"./img/"
+	},
+	"memcached":{
+		"urls":["127.0.0.1:11211"],
+		"hostname":"test"
+	},
+	"other":{
+		"authenticationKey":"32921hjijklj1292h21ll1k20"
+	}
+}

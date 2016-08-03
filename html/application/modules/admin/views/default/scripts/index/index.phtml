@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="<?=$this->url()?>/skin/css/index.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="<?=$this->url()?>/js/lib/jquery/jquery-1.9.1.min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$('.h_col a').mousedown(function(){
+			changeimg($(this));
+			return false;
+		});
+		$('.h_col a').mouseup(function(){
+			reimg($(this));
+			return false;
+		});
+		$('.h_col a').mouseout(function(){
+			reimg($(this));
+			//alert("hehe");
+		});
+		$('.h_col a').click(function(){
+			if ($(this).attr("_child")) {
+				goway = "/menu?m="+$(this).attr("_method")+"&a="+$(this).attr("_child");
+				
+			}else{
+				goway = "/menu?m="+$(this).attr("_method")+"&a=index";
+			}
+			window.location.href = goway;
+			return false;	
+		});
+	});
+
+	function changeimg(the_a){
+		classname=($(the_a).attr('id'));
+		$(the_a).removeClass(classname);
+		$(the_a).addClass(classname+"_press");
+
+	}
+
+	function reimg(the_a){
+		classname=($(the_a).attr('id'));
+		$(the_a).removeClass(classname+"_press");
+		$(the_a).addClass(classname);
+	}
+	
+</script>
+</head>
+<body>
+<div class="container">
+	<div class="head">
+		<div class="page_headgrad">
+			<div class="page_headbtm">
+				<div class="page_headmdl">金融卡结算触控端</div>
+			</div>
+		</div>
+	</div>
+	<div class="content main_menu_list">
+		
+		<div class="main_menu_bgt"></div>
+		<div class="main_menu_btn">
+			<div class="h_row clearfix">
+			<?php 
+				foreach($this->modules as $k=>$v){
+					if ($k % 5 == 0 && $k != 0) {?>
+			</div>
+			<div class="clear_fix"></div>
+			<div class="h_row">		
+					<?php }
+					if (empty($v['child'])) {?>
+				<div class="h_col"><a href="/<?=$v['module']?>/index" hidefocus="true" class="home_<?=$v['module']?>" id="home_<?=$v['module']?>" _method="<?=$v['module']?>" _child=""></a></div>	
+				
+				<?php }else{?>
+				<div class="h_col"><a href="/<?=$v['module']?>/index" hidefocus="true" class="home_<?=$v['module']?>" id="home_<?=$v['module']?>" _method="<?=$v['module']?>" _child="<?=$v['child']['module']?>"></a></div>	
+					
+					<?php }
+					}
+			?>
+			</div>
+		</div>
+		<div class="main_menu_bgb"></div>
+		<div class="main_menu_logo">
+			<div class="main_menu_eixt">
+				<a href="/login/index/loginout?id=9aa04016a565adcfbd3cae29e292657d"></a>
+			</div>
+		</div>
+	</div>
+		<!-- 
+		</div>
+			<div class="h_col"><a href="/search/index" hidefocus="true" class="home_cx" id="home_cx" _method="search"></a></div>
+			<div class="h_col"><a href="/shop/index" hidefocus="true" class="home_sp" id="home_sp" _method="shop"></a></div>
+			<div class="h_col"><a href="/mall/index" hidefocus="true" class="home_jrsc" id="home_jrsc" _method="mall"></a></div>
+			<div class="h_col"><a href="/transfer/index" hidefocus="true" class="home_zz" id="home_zz" _method="transfer"></a></div>
+			<div class="h_col"><a href="/wage/index" hidefocus="true" class="home_gzff" id="home_gzff" _method="wage"></a></div>
+		
+			<div class="h_col"><a href="jf.html" hidefocus="true" class="home_jf" id="home_jf" _method="pay"></a></div>
+			<div class="h_col"><a href="scjy.html" hidefocus="true" class="home_scjy" id="home_scjy" _method="trade"></a></div>
+			<div class="h_col"><a href="spfh.html" hidefocus="true" class="home_spfh" id="home_spfh" _method="deliver"></a></div>
+			<div class="h_col"><a href="###" hidefocus="true" class="home_kcgl" id="home_kcgl" _method="stoc"></a></div>
+			<div class="h_col"><a href="mj.html" hidefocus="true" class="home_mjrk" id="home_mjrk" _method="seller"></a></div>
+		</div>
+		 -->
+</div>
+
+</body>
+</html>

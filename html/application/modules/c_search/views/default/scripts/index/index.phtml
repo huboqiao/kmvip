@@ -1,0 +1,138 @@
+<?=$this->location?>
+<table class="cx_select">
+	<tr>
+		<td>开始时间：</td>
+		<td class="select">
+			<input type="text" id="starttime" />
+		</td>
+		<td>结束时间：</td>
+		<td class="select">
+			<input type="text" value="" id="endtime" />
+		</td>
+		<td><button type="button" class="btn btn-success query">查&nbsp;询</button></td>
+	</tr>
+</table>
+
+<div class="clear_fix"></div>
+<br />
+<div class="mj_list">
+	<div class="gj"></div>
+	<div class="mj_list_content">
+		<input id="orderby" type="hidden" value="<?=$this->orderby?>"/>
+		<input id="ordersc" type="hidden" value="<?=$this->ordersc?>"/>
+		<div class="mj_table">
+			<table>
+				<thead>
+				<tr>
+					<th class="order order_id" order="id" value="<?=$this->ordersc?>"><span style="background-color: #17d2fa;"></span>交易流水号</th>
+					<th class="order order_incomecard" order="incomecard" value="<?=$this->ordersc?>"><span style="background-color: #17fa61;"></span>收款卡号</th>
+					<th class="order order_membername" order="membername" value="<?=$this->ordersc?>"><span style="background-color: #e9bb2e;"></span>收款人</th>
+					<th class="order order_amount" order="amount" value="<?=$this->ordersc?>"><span style="background-color: #be08ce;"></span>金额</th>
+					<th class="order order_cdate" order="cdate" value="<?=$this->ordersc?>"><span style="background-color: #fa6c17;"></span>交易时间</th>
+				</tr>
+				</thead>
+				<tbody>
+			<?php 
+				foreach ($this->list as $k=>$v){?>
+					
+				<tr>
+					<td><?=$v['id']?></td>
+					<td><?=$v['incomecard']?></td>
+					<td><?=$v['membername']?></td>
+					<td align="right"style="color:red;"class="money"><?=$v['amount']?></td>
+					<td style="padding-left:10px;"><?=$v['cdate']?></td>
+				</tr>
+				<?php }
+			?>
+				</tbody>
+			</table>
+
+		</div>
+		<hr />
+		<div>
+			<div class="jrsc_fy" div style="float: left; margin-left: 20px;">
+				<ul class="pagination">
+					<?php 
+						if ($this->PageList['left']) {?>
+					<li><a href="<?=$this->url?>/search/index?pageNum=1">&laquo;</a></li>
+						<?php }
+						if ($this->PageList['leftdot']) {?>
+							
+					<li><a class="dot" href="">...</a></li>
+						<?php }
+						foreach ($this->PageList['list'] as $v){
+							$class=($v == $this->currentPage)?"class='active'":"";
+					?>
+					<li <?=$class?>><a href="<?=$this->url?>/search/index?pageNum=<?=$v?>"><?=$v?></a></li>
+						<?php }
+					if ($this->PageList['rightdot']) {?>
+							
+					<li><a class="dot" href="">...</a></li>
+						<?php }
+						if ($this->PageList['right']) {?>
+					<li><a href="<?=$this->url?>/search/index?pageNum=<?=$this->totalPage?>">&raquo;</a></li>
+						<?php }
+					?>
+				</ul>
+			</div>
+
+		</div>
+		
+	</div>
+</div>
+<script>
+	orderinfo='';
+	if ('<?=$this->ordersc?>'=='desc') {
+		orderinfo='(降)';
+	}else{
+		orderinfo='(升)';
+	}
+	$('th.order_<?=$this->orderby?>').html($('th.order_<?=$this->orderby?>').html()+orderinfo);	
+	$('#starttime,#endtime').datetimepicker();
+	<?php if (!empty($this->starttime)) {?>
+		
+	$('#starttime').datetimepicker('setDate', (new Date(<?=$this->starttime*1000?>)));
+	<?php }
+	if (!empty($this->endtime)) {?>
+			
+		$('#endtime').datetimepicker('setDate', (new Date(<?=$this->endtime*1000?>)));
+		<?php }
+	?>
+	
+	$('th.order').click(function(){
+		data="starttime="+$('#starttime').datetimepicker('getDate')+"&";
+		data+="endtime="+$('#endtime').datetimepicker('getDate')+"&";
+		data+="orderby="+$(this).attr('order')+"&";
+		if($(this).attr('order')==$('input#orderby').attr('value')){
+			if ($(this).attr('value')=='desc') {
+
+				data+="ordersc=asc";
+			}else{
+
+				data+="ordersc=desc";
+			}
+		}else{
+
+			data+="ordersc=desc";
+		}	
+        loadRightData("<?=$this->url?>/search/index","post",data);
+	});
+	
+	$('.query').click(function(){
+		data="starttime="+$('#starttime').datetimepicker('getDate')+"&";
+		data+="endtime="+$('#endtime').datetimepicker('getDate');
+        loadRightData("<?=$this->url?>/search/index","post",data);
+		});
+
+	$('#load_data a').click(function(){
+		
+		data="starttime="+$('#starttime').datetimepicker('getDate')+"&";
+		data+="endtime="+$('#endtime').datetimepicker('getDate')+"&";
+		data+="orderby="+$('input#orderby').attr('value')+"&";
+		data+="ordersc="+$('input#ordersc').attr('value');
+		rightATagClickListener($(this),data);
+		return false;
+		});
+
+
+</script>

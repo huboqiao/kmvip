@@ -1,0 +1,132 @@
+<?=$this->location?>
+<table class="cx_select">
+	<tr>
+		<td>入库类型：</td>
+		<td class="select">
+			<input type="text" value="<?=$this->list[0]['type']?>" readonly="readonly"/>
+		</td>
+		<td>入库单号：</td>
+		<td class="select">
+			<input type="text" value="<?=$this->list[0]['stock_on']?>" readonly="readonly"/>
+		</td>
+		<td>原始单号：</td>
+		<td class="select">
+			<input type="text" value="<?=$this->list[0]['ordersn']?>" readonly="readonly"/>
+		</td>
+	</tr>
+	<tr >
+		<td>创建时间：</td>
+		<td class="select">
+			<input type="text" value="<?=$this->list[0]['cdate']?>" readonly="readonly"/>
+		</td>
+		<td>入库时间：</td>
+		<td class="select">
+			<input type="text" value="<?=$this->list[0]['indate']?>" readonly="readonly"/>
+		</td>
+		<td class="select">
+			<input type="button" class="btn btn-failed" value="返回"/>
+		</td>
+	</tr>
+</table>
+
+<div class="clear_fix"></div>
+<br />
+<div class="mj_list">
+	<div class="table_title clearfix">
+			<div class="title_left"><?=$this->module?></div>
+			<div class="jrsc_fy" >
+				<ul class="pagination">
+					<?php 
+						if ($this->PageList['left']) {?>
+					<li><a href="<?=$this->url?>/stock/stockin/info?id=<?=$this->list[0]['id']?>&pageNum=1">&laquo;</a></li>
+						<?php }
+						if ($this->PageList['leftdot']) {?>
+							
+					<li><a class="dot" href="">...</a></li>
+						<?php }
+						foreach ($this->PageList['list'] as $v){
+							$class=($v == $this->currentPage)?"class='active'":"";
+					?>
+					<li <?=$class?>><a href="<?=$this->url?>/stock/stockin/info?id=<?=$this->list[0]['id']?>&pageNum=<?=$v?>"><?=$v?></a></li>
+						<?php }
+					if ($this->PageList['rightdot']) {?>
+							
+					<li><a class="dot" href="">...</a></li>
+						<?php }
+						if ($this->PageList['right']) {?>
+					<li><a href="<?=$this->url?>/stock/stockin/info?id=<?=$this->list[0]['id']?>&pageNum=<?=$this->totalPage?>">&raquo;</a></li>
+						<?php }
+					?>
+				</ul>
+			</div>
+		</div> 
+		<div class="rk_table">
+			<table class="data_table" border="0" cellpadding="0" cellspacing="0">
+				<thead>
+				<tr>
+					<th >商品名称</th>
+					<th >sku码</th>
+					<th >采购价</th>
+					<th >数量</th>
+					<th >小计</th>
+				</tr>
+				</thead>
+				<tbody>
+			<?php 
+				foreach ($this->list as $k=>$v){?>
+					
+				<tr>
+					<td><?=$v['pname']?></td>
+					<td><?=$v['suk']?></td>
+					<td><?=sprintf("%.2f",$v['price'])?></td>
+					<td><?=$v['goods_numbers']?></td>
+					<td><?=sprintf("%.2f",$v['plus'])?></td>
+				</tr>
+				<?php }
+			?>
+				</tbody>
+			</table>
+
+		</div>
+		<hr />
+
+</div>
+<script>
+	
+
+	$('#load_data a').click(function(){
+
+		rightATagClickListener($(this),'');
+		return false;
+	});
+	//返回
+	$('.btn-failed').click(function(){
+		loadRightData('/stock/stockin','GET','');
+	});
+	//入库
+	$('.btn-success').click(function(){
+		data= new Object();
+		data.oid=<?=$this->list[0]['id']?>;
+		result = ajaxPost(data,'/stock/stockin/input');
+		if (result['stat']) {
+		
+			jinggao(result['message']);
+			$this = $(this);
+			$(".jinggaobtn").click(function(){
+				$(".jinggaoout").remove();	
+				loadRightData('/stock/stockin','GET','');
+			});
+		}else{
+		
+			jinggao(result['message']);
+			$this = $(this);
+			$(".jinggaobtn").click(function(){
+				$(".jinggaoout").remove();	
+			});
+		}
+	});
+
+
+	//隔行变色
+	$(".data_table tbody tr:odd td").css("background","#cbefde");
+</script>

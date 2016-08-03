@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html >
+<head>
+<meta charset="UTF-8">
+<script type="text/javascript" src="/js/lib/jquery/jquery-1.9.1.min.js"></script>
+<!-- <script type="text/javascript" src="/js/lib/bootstrap/bootstrap.min.js"></script> -->
+<!-- <script type="text/javascript" src="/js/lib/jquery/jquery-ui.js"></script>  -->
+<!-- <script type="text/javascript" src="/js/lib/jquery/jquery-ui-slide.min.js"></script> -->
+<!-- <script type="text/javascript" src="/js/lib/jquery/jquery-ui-timepicker-addon.js"></script>  -->
+<script type="text/javascript" src="/js/myjq.js"></script> 
+<script type="text/javascript">
+	//全局变量
+$(function(){
+	
+	//$('body').css({"height":$(window).height(),"overflow-y":"hidden"});
+	
+	//改变左侧导航样式
+	$("div.left_nav a.<?=$this->module['module']?>").addClass("active");
+
+	$("div.left_nav a.active").parents('div.child').show();
+	countNewOrder();
+	setInterval("countNewOrder()",1000);
+	loadRightData("<?=$this->url?>/<?=$this->module['href']?>",'GET','',true);
+
+	//隔行变色
+	$("data_table tbody tr:even td").css("background","#f00");
+	
+	//绑定左侧点击事件
+	$("div.left_nav a:not(#login)").click(function(){
+		$("div.left_nav a").removeClass("active");
+		$(this).addClass("active");
+		if ($(this).attr('_class') == 'navParent' && $(this).nextAll('div').size()>0) {
+			$(this).next('div').slideToggle();
+		} else {
+
+	        loadRightData("<?=$this->url?>"+$(this).attr("href"),"GET","",false);
+		}
+		return false;
+	});
+
+});
+
+	
+</script>
+<link rel="stylesheet" href="/skin/css/bootstrap.min.css" media="screen">
+<link rel="stylesheet" href="/skin/css/jquery-ui.css" /> 
+<link rel="stylesheet" href="/skin/css/index.css">
+<link rel="stylesheet" href="/skin/css/css.css">
+</head>
+<body scroll="no">	
+	<div class="head">
+		<div class="page_headgrad">
+			<div class="page_headbtm">
+				<div class="page_headmdl">金融卡结算触控端</div>
+				<div class="main_btn">
+					<a href="/index.php">
+						主菜单
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="container">
+		<!--左侧-->
+		<div id="left">
+			<!--导航-->
+			<div class="left_nav">
+				<?php
+				foreach ( $this->modules as $k => $v ) {
+					?>
+				
+				<div class="parent">
+					<a _class="navParent" href="/<?=$v['module']?>/index" class="<?=$v['module']?>"
+						id="<?=$v['module']?>"> <span class="icon"><img
+							src="/skin/images/nav_<?=$v['module']?>_icon.png" /></span> <span
+						class="text"><?=$v['module_name']?></span>
+					<?php 
+						if($v['module'] == 'order'){?>
+							
+						<span class="newtip"></span>
+						<?php }
+					?>
+					</a>
+						<?php
+					if($v['child']){?>
+					<div class="child">
+						<?php foreach($v['child'] as $kk => $vv){?>
+					<div class="sub">
+						<a href="/<?=$v['module']?>/<?=$vv['module']?>" class="<?=$vv['module']?>"
+							id="<?=$vv['module']?>"> <span class="icon"><img
+								src="/skin/images/nav_<?=$vv['module']?>_icon.png" /></span> <span
+							class="text"><?=$vv['module_name']?></span>
+						<?php 
+						if($vv['module'] == 'ordershop'){?>
+							
+						<span class="newtip2"></span>
+						<?php }
+						
+						if($vv['module'] == 'myorder'){?>
+							
+						<span class="newtip3"></span>
+						<?php }
+						?>
+							
+							
+						</a>
+						
+					</div>	
+						<?php }?>
+					</div>
+					<?php }?>
+				</div>
+				<?php 
+				}
+				?>
+				
+				<div>
+					<a href="/login/index/loginout?id=9aa04016a565adcfbd3cae29e292657d" class="login"
+						id="login"> <span class="icon"><img
+							src="/skin/images/nav_login_icon.png" /></span> <span
+						class="text">退出</span>
+					</a>
+				</div>	
+			</div>
+
+
+		</div>
+		<!--左侧结束-->
+		<!--右侧-->
+		<div id="right">
+			<div class="content">
+				<div class="right_navigation">
+					<a href="index.html">主页</a>><a
+						href="/<?=$this->module['module']?>/index"><?=$this->module['module_name']?></a>
+				</div>
+				<div class="clear_fix"></div>
+				<div id="load_data"></div>
+				<div id="loading">
+					<div id="loading_text">正在加载中。。。。。。</div>
+					<!--
+					<img src="/skin/image/loading.gif"/>
+					-->
+				</div>
+			</div>
+		</div>
+		<!--右侧结束-->
+
+	</div>
+</body>
+</html>

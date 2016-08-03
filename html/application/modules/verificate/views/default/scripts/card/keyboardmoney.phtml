@@ -1,0 +1,125 @@
+<div class="keyboard_password">
+	<div id="cancel">
+		<img width="40" height="40" src="/skin/images/x.png" />
+	</div>
+	<div id="keyboard_password">
+		<div class="input">
+			<label>金额：</label><input type="text" id="password" class="money" value="0.00"/>
+								<input type="hidden" id="tempmoney" value="0"/>
+		</div>
+		<div class="keyboard">
+			<div>
+		<?php
+		foreach ( $this->numarr as $i => $v ) {
+			if ($i == 9) {
+				continue;
+			}
+			if ($i % 3 == 0) {
+				?>
+			<div class="clearfix"></div>
+			</div>
+			<div>
+				<?php
+			
+			}
+			?>
+			<div class="num" id="num_<?=$v?>" value="<?=$v?>">
+					<img src="/skin/images/<?=$v?>.png" width="100" height="100" />
+				</div>
+			<?php
+		
+		}
+		?>
+			<div class="clearfix"></div>
+			</div>
+			<div>
+				<div class="num" id="num_dot" value=".">.</div>
+				<div class="num" id="num_<?=$this->numarr[9]?>"
+					value="<?=$this->numarr[9]?>">
+					<img src="/skin/images/<?=$this->numarr[9]?>.png" />
+				</div>
+				<div class="num" id="clear">
+					<img src="/skin/images/clear.png" />
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div id="submit">
+				<img src="/skin/images/sure.png" />
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+// 	$('#password').attr('value',fmoney($("#money").attr('value'),2));
+// 	$('#tempmoney').attr('value',$("#money").attr('value'));
+
+	$('#paycard,#receivecard,#amount').attr('readonly','readonly');
+// 	$('#password').focus();
+	//确认
+	$('#submit').click(function(){
+		$password = $('#tempmoney').attr('value');
+		if ($password=='' || $password==" " || $password ==0) {
+			jinggao('请输入金额');
+			$this = $(this);
+			$(".jinggaobtn").click(function(){
+				$(".jinggaoout").remove();	
+				$('#password').attr('value','0.00');
+				$('#tempmoney').attr('value','0');
+			});
+			return ;
+		}
+		if (isNaN($password)) {
+			jinggao('请输入正确金额');
+			$this = $(this);
+			$(".jinggaobtn").click(function(){
+				$(".jinggaoout").remove();	
+				$('#password').attr('value','0.00');
+				$('#tempmoney').attr('value','0');
+			});
+			return ;
+		}
+		$('#amount').attr('value',fmoney($password, 2));
+		$('#money').attr('value',toFixedTwo($password));
+		$('#btnpay').focus();
+		$('#paycard,#receivecard,#amount').attr('readonly',false);
+		$('#load_data .keyboard_password').remove();
+	});
+	//取消
+	$("#cancel").click(function(){
+		$('#paycard,#receivecard,#amount').attr('readonly',false);
+		$('#load_data .keyboard_password').remove();
+		}
+	);
+	$("#keyboard_password .keyboard .num").mousedown(function(){
+		$(this).addClass('numdown');
+	});
+	$("#keyboard_password .keyboard .num").mouseup(function(){
+		$(this).removeClass('numdown');
+	});
+	$("#keyboard_password .keyboard .num").mouseleave(function(){
+		$(this).removeClass('numdown');
+	});
+
+	$('.keyboard .num[id ^=num]').click(function(){
+		if ($(this).attr('value') == '.') {
+			if($('#tempmoney').attr('value').indexOf('.') !=-1){
+				return;
+			}
+		}
+		
+		$('#tempmoney').attr('value',$('#tempmoney').attr('value')+$(this).attr('value'));
+		$('#password').attr('value',fmoney($('#tempmoney').attr('value'),2));
+	});
+
+	$('.keyboard #back').click(function(){
+		if ($('#tempmoney').attr('value').length>0) {
+			sub = $('#tempmoney').attr('value').substr(0,$('#tempmoney').attr('value').length-1);
+			$('#tempmoney').attr('value',sub);
+			$('#password').attr('value',fmoney($('#tempmoney').attr('value'),2));
+		}
+	});
+	$('.keyboard #clear').click(function(){
+		$('#tempmoney').attr('value',"");
+		$('#password').attr('value',"0.00");
+	});
+</script>

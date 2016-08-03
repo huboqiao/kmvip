@@ -1,0 +1,120 @@
+<?=$this->location?>
+
+<div class="mj_list">
+	<div class="table_title clearfix">
+			<div class="title_left">
+				<?php
+				$nowclass = $this->cat_id == 0?"class = 'now'":"";
+				?>		
+				<a <?=$nowclass?> href="<?=$this->url?>/mall/index?cat_id=0?>" >全部</a>						
+			
+				<?php 
+					foreach($this->catList as $i=>$v){
+						$nowclass = $this->cat_id == $v["cat_id"]?"class = 'now'":"";
+						?>
+						<a <?=$nowclass?> href="<?=$this->url?>/mall/index?cat_id= <?=$v["cat_id"]?>" ><?=$v["cat_name"]?></a>						
+					<?php }
+				?>
+			</div>
+			<div class="jrsc_fy" >
+				<a class="buycar" href="/mall/index/buycar">
+					<img src="/skin/image/buycar.png"/>
+				</a>
+				<a class="buycar" href="/mall/index/orderlist">
+					<img src="/skin/image/shoporder.png"/>
+				</a>
+			</div>
+		</div> 
+		<div class="rk_table" style="display:block;">
+			<ul class="glist_ul clearfix">
+			<?php 
+				$i = 0;
+				foreach ($this->list as $k=>$v){
+					if($i == 5){?>
+						</ul>
+						<ul class="glist_ul clearfix">
+						
+					<?php }
+					?>
+				<li>
+					<div class="glist_box" id="goods_<?=$v['goods_id']?>">
+						<div class="glist_img"><img src="/skin/image/binping.png" /></div>
+						<div class="glist_name"><?php echo $v['goods_name'];?></div>
+						<div class="glist_number"><span>库存：</span><span><?php echo $v['goods_number']?></span></div>
+						<div class="glist_price"><span>价格：</span><span><?php echo $v['goods_price']?></span></div>
+					</div>
+					<div class="intoCart">
+						<?php 
+							$class=$v["goods_number"]>0?"class='listaddcartbtn'":"class='noaddcartbtn'";
+						?>
+						<div <?=$class?> id="addcart_<?=$v["goods_id"]?>">加入购物车</div>
+					</div>
+				</li>
+				
+				<?php 
+				$i++;
+				}
+			?>
+			</ul>
+				
+
+		</div>
+		<hr />
+			<?php
+	
+		$classleft = ($this->currentPage <= 1)?"slidehide":"";
+		$classright = ($this->currentPage >= $this->totalPage)?"slidehide":"";
+		if($this->totalPage <=1){
+			$classleft='slidehide';
+			$classright='slidehide';
+		}
+	?>
+	<div class="slide slideleft <?=$classleft?>"><a href="<?=$this->url?>/mall/index?pageNum=<?=($this->currentPage-1)?>&cat_id= <?=($this->cat_id)?>">&nbsp;</a></div>
+	<div class="slide slideright <?=$classright?>"><a href="<?=$this->url?>/mall/index?pageNum=<?=($this->currentPage+1)?>&cat_id= <?=($this->cat_id)?>">&nbsp;</a></div>			
+		
+</div>
+<script>
+	
+	$('.query').click(function(){
+		
+		});
+
+	$('#load_data a').click(function(){
+
+		rightATagClickListener($(this),'');
+		return false;
+		});
+
+	//翻页
+	slidesome(); 
+	
+	//添加购物车
+	$(".listaddcartbtn").click(function(){
+		goods_id = ($(this).attr("id").substr(8));
+		obj = new Object();
+		obj.goods_id = goods_id;
+		obj.goods_number = 1;
+		data = addCart(obj);
+		if(data.stat){
+			
+			jinggao(data.message);
+			$this = $(this);
+			$(".jinggaobtn").click(function(){
+				$(".jinggaoout").remove();
+			});
+		}
+	});
+	
+	//商品详情
+	$(".glist_box").click(function(){
+		
+		goods_id = ($(this).attr("id").substr(6));
+		data = new Object();
+		data.goods_id = goods_id;
+		loadRightData("/mall/index/info",'post',data);
+		
+	});
+	
+	
+	
+</script>

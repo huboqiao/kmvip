@@ -1,0 +1,136 @@
+<?=$this->location?>
+
+<div class="mj_list">
+	<div class="table_title clearfix">
+			<div class="title_left"><?=$this->module?></div>
+			<div class="jrsc_fy" >
+				<a class="buycar" href="/mall/index/buycar">
+					<img src="/skin/image/buycar.png"/>
+				</a>
+				<a class="buycar" href="/mall/index/orderlist">
+					<img src="/skin/image/shoporder.png"/>
+				</a>
+			</div>
+		</div> 
+		<div class="gdtl_box clearfix" style="display:block;">
+			<div class="gdtl_left">
+				<div><span>品名：</span><span><?=$this->goods["goods_name"]?></span></div>
+				<div><span>分类：</span><span><?=$this->goods["cat_name"]?></span></div>
+				<div><span>单价：</span><span class="goods_price"><?=$this->goods["goods_price"]?></span></div>
+				<div><span>库存：</span><span class="goods_number"><?=$this->goods["goods_number"]?></span></div>
+				<div><span>描述：</span></div>
+				<div><span><?=$this->goods["goods_desc"]?></span></div>
+			</div>	
+			<div class="gdtl_right">
+				<div class="gdtl_img"><img src="/skin/image/binping.png" /></div>
+			</div>			
+
+		</div>
+		<div class="gdtl_btm">
+		<?php 
+			if($this->goods["goods_number"] > 0 ){?>
+			<div class="select_number">
+				<span>数量：</span>
+				<span class="gdtl_jiajian gdtl_jian">-</span>
+				<span><input class="input_number" type="text" value="1" id="goods_number"/></span>
+				<span class="gdtl_jiajian gdtl_jia">+</span>
+			</div>
+			<div class="select_number ">
+				<span>金额：</span>
+				<span class="gdtl_money"><?=$this->goods["goods_price"]?></span>
+			</div>
+			
+			<div class="gdtl_jiaoyi">
+				<span class="gdtl_buy">立即购买</span>
+				<span class="gdtl_tocart">加入购物车</span>
+			</div>
+				
+			<?php }else{?>
+			<div>
+				该商品库存不足！
+			</div>
+			
+			<?php }
+		?>
+			
+		</div>
+	
+</div>
+<script>
+	
+	$('.query').click(function(){
+		
+		});
+
+	$('#load_data a').click(function(){
+
+		rightATagClickListener($(this),'');
+		return false;
+		});
+
+	
+	//添加购物车
+	$(".listaddcartbtn").click(function(){
+		goods_id = ($(this).attr("id").substr(8));
+		data = addCart(goods_id);
+		if(data.stat){
+			
+			jinggao(data.message);
+			$this = $(this);
+			$(".jinggaobtn").click(function(){
+				$(".jinggaoout").remove();
+			});
+		}
+	});
+	
+	//修改数量，总价
+	
+	$(".gdtl_jian").click(function(){
+		buy_number = $('.input_number').attr("value");
+		if(buy_number>1){
+			$('.input_number').attr("value",(buy_number-1));
+			newmoney = $('.input_number').attr("value")*parseFloat($('.goods_price').text());
+			$('.gdtl_money').text(formatCurrency(newmoney));
+		}
+	});
+		
+	$(".gdtl_jia").click(function(){
+		var goods_number = Number($('.goods_number').text());
+		buy_number = $('.input_number').attr("value");
+		if(buy_number < goods_number){
+		
+			$('.input_number').attr("value",(parseInt(buy_number)+1));
+			newmoney = $('.input_number').attr("value")*parseFloat($('.goods_price').text());
+			$('.gdtl_money').text(formatCurrency(newmoney));
+		}
+		
+	});
+	
+	//立即购买
+	$(".gdtl_buy").click(function(){
+		
+		obj = new Object();
+		obj.goods_id = <?=$this->goods["goods_id"]?>;
+		obj.goods_number = $('.input_number').attr("value");
+		loadRightData("/mall/index/addorderbygoods",'post',obj);
+	});
+	
+	//添加购物车
+	
+	$(".gdtl_tocart").click(function(){
+		obj = new Object();
+		obj.goods_id = <?=$this->goods["goods_id"]?>;
+		obj.goods_number = $('.input_number').attr("value");
+		data = addCart(obj);
+		if(data.stat){
+			
+			jinggao(data.message);
+			$this = $(this);
+			$(".jinggaobtn").click(function(){
+				$(".jinggaoout").remove();
+			});
+		}
+	});
+	
+	
+</script>

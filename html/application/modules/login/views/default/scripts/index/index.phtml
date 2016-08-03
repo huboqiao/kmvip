@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="<?=$this->url()?>/skin/css/css.css" rel="stylesheet"
+	type="text/css" />
+<script type="text/javascript"
+	src="<?=$this->url()?>/js/lib/jquery/jquery-1.9.1.min.js"></script>
+
+<link href="<?=$this->url()?>/skin/css/index.css" rel="stylesheet"
+	type="text/css" />
+</head>
+<?php if ($this->login) {?>
+<body class="login">
+	<div class="head">
+		<div class="page_headgrad">
+			<div class="page_headbtm">
+				<div class="page_headmdl">金融卡结算触控端</div>
+			</div>
+		</div>
+	</div>
+	<div class="container main_login clearfix">
+		<div class="floatleft login_left">
+			<div class="login_imgtop">
+				<img src="/skin/image/biglogo.png"/>
+			</div>
+			<div class="login_imgbtm">
+				<img src="/skin/image/login_imgbtm.png"/>
+			</div>
+		</div>
+		<div class="floatright login_right">
+			<form action="#" method="post" />
+				<div id=user_login>
+					<div class="login_title">登录</div>
+					<div class="inputdiv">
+						<input class="TxtUserNameCssClass" type="password"
+						id="TxtUserName" maxlength=20 name=username autoComplete="off" >
+					</div>
+					<div class="login_btn">
+						<img src="/skin/image/login_btn.png"/>
+					</div>
+					
+					<div class="login_error">
+						<span style="color: red"><?php echo $this->error;?></span>
+					</div>
+				</div>
+			</form>
+		</div>
+		
+	</div>
+<script type="text/javascript">
+$(function(){
+	$('#TxtUserName').focus();
+});
+</script>
+</body>
+
+<?php }else{?>
+	
+<body>
+	<div>非法访问，请通过金荣冷库终端设备访问！</div>
+</body>
+	
+<?php }?>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,232 @@
+<?=$this->location?>
+<div class="order_title">
+	<div>
+		<span>订单编号：</span><span><?=$this->order["order_sn"]?></span>
+	</div>
+	<div>
+		<span>生成时间：</span><span><?=$this->order["add_time"]?></span>
+	</div>
+	<?php 
+	if($this->order['pay_status'] == 1){?>
+	<div>
+		<span>支付时间：</span><span><?=$this->order["pay_time"]?></span>
+	</div>
+	<?php }?>
+</div>
+
+
+<div class="mj_list">
+	<div class="table_title clearfix">
+			<div class="title_left"><?=$this->module?></div>
+			<div class="jrsc_fy" >
+			</div>
+		</div> 
+		<div class="rk_table shoporder_list">
+			<table class="data_table shoporder_table" border="0" cellpadding="0" cellspacing="0">
+				<thead>
+				<tr>
+					<th >图标</th>
+					<th >名称</th>
+					<th >分类</th>
+					<th >单价</th>
+					<th >数量</th>
+					<th >小计</th>
+					<th >操作</th>
+				</tr>
+				</thead>
+				<tbody>
+			<?php 
+				foreach ($this->list as $k=>$v){?>
+					
+				<tr id="tr_<?=$v["goods_id"]?>">
+					<td><img class="order_img" src="/skin/image/binping.png" /></td>
+					<td><?=$v['goods_name']?></td>
+					<td><?=$v['cat_name']?></td>
+					<td class="goods_price"><?=$v['goods_price']?></td>
+					<?php 
+						if($this->order['pay_status'] == 0 && $this->order['order_status'] == 0 ){?>
+					<td>
+						<span class="buycar_jiajian buycar_jian">-</span>
+						<span class="buycar_numberspan">
+							<input class="buycar_number" id="number_<?=$v['goods_number']?>" type="text" value="<?=$v['cart_number']?>"/>
+						</span>
+						<span class="buycar_jiajian buycar_jia">+</span>
+					</td>
+						<?php }else{?>
+					<td>
+						<span  class="buycar_number" id="number_<?=$v['goods_number']?>" ><?=$v['cart_number']?></span>
+					</td>
+						<?php }?>
+					
+					<td class="xiaoji"><?=($v['goods_price']*$v['cart_number'])?></td>
+					<td class="goto">
+					<?php 
+						if($this->order['pay_status'] == 0 && $this->order['order_status'] == 0){?>
+						<span class="buycartdelete" id="delete_<?=$v["goods_id"]?>">删除</span>
+						<?php }?>
+					</td>
+				</tr>
+				<?php }
+			?>
+				</tbody>
+			</table>
+
+		</div>
+		<hr />
+		<div class="heji">
+			<span>合计：</span>
+			<span class="heji_count"><?php
+					$allcount = 0;
+					foreach($this->list as $k=>$v){
+						$allcount+=floatval($v['goods_price']*$v['cart_number']);
+					}
+					
+					echo $allcount;
+				?></span>
+		</div>
+		<?php 
+		if($this->order['pay_status'] != 1){?>
+		<div class="addOrder">
+			<span>立即支付</span>
+		</div>
+		<?php }
+	
+		$classleft = ($this->currentPage <= 1)?"slidehide":"";
+		$classright = ($this->currentPage >= $this->totalPage)?"slidehide":"";
+		if($this->totalPage <=1){
+			$classleft='slidehide';
+			$classright='slidehide';
+		}
+	?>
+	<div class="slide slideleft <?=$classleft?>"><a href="<?=$this->url?>/order/ordershop?pageNum=<?=($this->currentPage-1)?>">&nbsp;</a></div>
+	<div class="slide slideright <?=$classright?>"><a href="<?=$this->url?>/order/ordershop?pageNum=<?=($this->currentPage+1)?>">&nbsp;</a></div>			
+		
+</div>
+<script>
+	
+	$('.query').click(function(){
+		
+		});
+
+	$('#load_data a').click(function(){
+
+		rightATagClickListener($(this),'');
+		return false;
+		});
+					
+	//鼠标经过
+	$('.data_table tbody tr').hover(function(){
+		$("td",this).css("background","#ccc");
+	},function(){
+		$("td",this).css("background",$(this).attr("background"));
+	});	
+	
+	//点击行
+	$('.data_table tbody tr').click(function(){
+		rightATagClickListener($("td.goto a",this),'');
+	});
+		
+
+	//隔行变色
+	$(".data_table tbody tr:even").attr("background","#fff");
+	$(".data_table tbody tr:odd").attr("background","#cbefde");
+	$(".data_table tbody tr:odd td").css("background","#cbefde");
+
+	//翻页
+	slidesome(); 
+	//
+	$(".xiaoji").each(function(){
+		$(this).text(formatCurrency($(this).text()));
+		
+	});
+	formatCurrency(parseFloat($(".heji_count").text()));
+	//修改数量，总价
+	$(".buycar_jian").click(function(){
+		$this = $(this).parents("tr");
+		buy_number = $('.buycar_number',$this).attr("value");
+		if(buy_number>1){
+			$('.buycar_number',$this).attr("value",(buy_number-1));
+			newmoney = $('.buycar_number',$this).attr("value")*parseFloat($('.goods_price',$this).text());
+			$('.xiaoji',$this).text(formatCurrency(newmoney));
+			//修改订单数量
+			
+			goods_number = buy_number-1;
+			goods_id = Number($this.attr("id").substr(3));
+			obj = new Object();
+			obj.goods_id = goods_id;
+			obj.goods_number = goods_number;
+			obj.order_id = <?=$this->order["id"]?>;
+			updateOrderNumber(obj);
+		}
+		//更新总价
+		countAllMoney();
+	});
+	
+	//修改数量，总价
+	$(".buycar_jia").click(function(){
+		$this = $(this).parents("tr");
+		buy_number = Number($('.buycar_number',$this).attr("value"));
+		goods_number = Number($('.buycar_number',$this).attr("id").substr(7));
+		if(buy_number < goods_number){
+			$('.buycar_number',$this).attr("value",(buy_number+1));
+			newmoney = $('.buycar_number',$this).attr("value")*parseFloat($('.goods_price',$this).text());
+			$('.xiaoji',$this).text(formatCurrency(newmoney));
+			//修改订单数量
+			
+			goods_number = buy_number+1;
+			goods_id = Number($this.attr("id").substr(3));
+			obj = new Object();
+			obj.goods_id = goods_id;
+			obj.goods_number = goods_number;
+			obj.order_id = <?=$this->order["id"]?>;
+			updateOrderNumber(obj);
+		}
+		//更新总价
+		countAllMoney();
+	});
+	
+	//删除
+	$(".buycartdelete").click(function(){
+		//删除订单中记录
+		goods_id = Number($(this).attr("id").substr(7));
+		obj = new Object();
+		obj.goods_id = goods_id;
+		obj.order_id = <?=$this->order["id"]?>;
+		delOrderGoods(obj);
+		$(this).parents("tr").remove();	
+		//更新总价
+		countAllMoney();
+			
+	});
+	//提交订单
+	
+	$(".addOrder").click(function(){
+		if($(".rk_table tr").length <= 1){
+				
+			jinggao("无商品");
+			$this = $(this);
+			$(".jinggaobtn").click(function(){
+				$(".jinggaoout").remove();
+			});
+			return ;
+		}
+		data= new Object();
+		data.order_id = <?=$this->order["id"]?>;
+		result = ajaxPost(data,'/mall/index/enoughmoney');
+		if(result.stat){
+			//显示输入密码款
+
+			html = ajaxKeyboard('/mall/index/keyboard?oid=<?=$this->order["id"]?>');
+			$('#load_data').append(html);
+		}else{
+			//显示余额不足
+			
+			jinggao(result.message);
+			$this = $(this);
+			$(".jinggaobtn").click(function(){
+				$(".jinggaoout").remove();	
+			});
+		}
+
+	});	
+</script>

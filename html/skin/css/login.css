@@ -1,0 +1,82 @@
+/* CSS Document */
+body{
+	margin:0 auto;
+    width:1024px;
+	height:768px;
+	font-size:14px;
+	background:url(/skin/images/bg.png) no-repeat center top;
+    /*border:1px solid  red;*/
+ }
+.clear{
+  clear:both;
+}
+
+a{ text-decoration:none}
+img{ border:none}
+
+.logo{
+	width:607px;
+	height: 57px;
+	margin-left: 50px;
+	padding-top:40px;
+	float:left;
+}
+.main{
+	 width:1024px;
+	 float:left;
+	 height:500px;
+	}
+.left{
+     padding:50px 20px 0px 20px;
+	 float:left;
+}
+.right{
+	  width:370px;
+	  height:430px;
+	  float:left;
+	  margin-left:80px;
+	  padding-top:20px;
+	  background-image:url(/skin/images/login_left.png);
+	  background-repeat: no-repeat;
+	}
+.login{
+	 margin-top:50px;
+	 margin-left:50px;
+	 color:white;
+	}
+
+.td_1{
+	height:42px;
+	background: url(/skin/images/td_bg.png) no-repeat;
+	vertical-align:middle;
+	}
+.td_2{
+	width:130px;
+	height:42px;
+	background: url(/skin/images/td_bg_check.png) no-repeat;
+	vertical-align:middle;
+	}
+	.denglu{
+	background:url(/skin/images/button.png)  no-repeat;	
+	}
+.tail{
+    width:1024px;
+	height:150px;
+	float:left;
+	font-size:14px;
+	color:white;
+	padding-top:90px;
+	}
+	
+input{
+	 background-color:transparent;
+	 width:220px;
+	 height:30px;
+	 padding:0px;
+	 margin-top:-7px;
+	 margin-left:5px;
+	 border:0px;
+	}
+.check input{
+	width:130px;
+	}

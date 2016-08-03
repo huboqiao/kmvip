@@ -1,0 +1,142 @@
+<div class="keyboard_password">
+	<div id="cancel">
+		<img width="40" height="40" src="/skin/images/x.png" />
+	</div>
+	<div id="keyboard_password">
+		<div class="input">
+			<label>密码：</label><input type="password" id="password" />
+		</div>
+		<div class="keyboard">
+			<div>
+		<?php
+		foreach ( $this->numarr as $i => $v ) {
+			if ($i == 9) {
+				continue;
+			}
+			if ($i % 3 == 0) {
+				?>
+			<div class="clearfix"></div>
+			</div>
+			<div>
+				<?php
+			
+			}
+			?>
+			<div class="num" id="num_<?=$v?>" value="<?=$v?>">
+					<img src="/skin/images/<?=$v?>.png" width="100" height="100" />
+				</div>
+			<?php
+		
+		}
+		?>
+			<div class="clearfix"></div>
+			</div>
+			<div>
+				<div class="num" id="back">
+					<img src="/skin/images/back.png" />
+				</div>
+				<div class="num" id="num_<?=$this->numarr[9]?>"
+					value="<?=$this->numarr[9]?>">
+					<img src="/skin/images/<?=$this->numarr[9]?>.png" />
+				</div>
+				<div class="num" id="clear">
+					<img src="/skin/images/clear.png" />
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div id="submit">
+				<img src="/skin/images/sure.png" />
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$submit = false;
+	$('#password').focus();
+	//确认
+	$('#submit').click(function(){
+		if($submit){
+			return;
+			}
+		$submit = true;
+		
+		$password = $('#password').attr('value');
+		if ($password=='' || $password==" ") {
+			jinggao("请输入密码");
+			$this = $(this);
+			$(".jinggaobtn").click(function(){
+				$(".jinggaoout").remove();	
+				$('#password').focus();	
+			});
+			$submit = false;
+			return ;
+		}
+		info = new Object();
+		info.cardid = <?=$this->cardid?>;
+		info.password = $password;
+		
+		if(!checkPassword(info)){
+		
+			jinggao("请输入密码有误，请重新输入");
+			$this = $(this);
+			$(".jinggaobtn").click(function(){
+				$(".jinggaoout").remove();	
+				$('#password').attr('value','');
+				$('#password').focus();
+			});
+			$submit = false;
+			return ;
+		}
+
+		result = buyOrder('/order/ordershop/buy?oid=<?=$this->oid?>');
+		if (result.stat) {
+		
+			jinggao(result.message);
+			$this = $(this);
+			$(".jinggaobtn").click(function(){
+				$(".jinggaoout").remove();	
+				loadRightData('/order/ordershop','get','');
+			});
+			
+		}else{
+		
+			jinggao(result.message);
+			$this = $(this);
+			$(".jinggaobtn").click(function(){
+				$(".jinggaoout").remove();	
+				$submit = false;
+				$('#load_data .keyboard_password').remove();
+			});
+		}
+
+	});
+	//取消
+	$("#cancel").click(function(){
+		$('#paycard,#receivecard,#amount').attr('readonly',false);
+			$('#load_data .keyboard_password').remove();
+		}
+	);
+	$("#keyboard_password .keyboard .num").mousedown(function(){
+		$(this).addClass('numdown');
+	});
+	$("#keyboard_password .keyboard .num").mouseup(function(){
+		$(this).removeClass('numdown');
+	});
+	$("#keyboard_password .keyboard .num").mouseleave(function(){
+		$(this).removeClass('numdown');
+	});
+
+	$('.keyboard .num[id ^=num]').click(function(){
+		$('#password').attr('value',$('#password').attr('value')+$(this).attr('value'));
+	});
+
+	$('.keyboard #back').click(function(){
+		if ($('#password').attr('value').length>0) {
+			sub = $('#password').attr('value').substr(0,$('#password').attr('value').length-1);
+			$('#password').attr('value',sub);
+		}
+	});
+	$('.keyboard #clear').click(function(){
+		$('#password').attr('value',"");
+	});
+</script>
